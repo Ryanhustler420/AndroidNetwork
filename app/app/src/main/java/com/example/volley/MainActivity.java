@@ -13,6 +13,8 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,7 +31,15 @@ public class MainActivity extends AppCompatActivity {
         JsonArrayRequest arrayRequest = new JsonArrayRequest(Url, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
-                Log.d("Response: ", response.toString());
+              for(int index=0; index < response.length(); index++) {
+                  try {
+                      JSONObject commentObject = response.getJSONObject(index);
+                      Log.d("email: ", commentObject.getString("email") + "/"
+                              + "Body: " + commentObject.getString("body"));
+                  } catch (JSONException e) {
+                      e.printStackTrace();
+                  }
+              }
             }
         }, new Response.ErrorListener() {
             @Override
