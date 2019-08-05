@@ -10,6 +10,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -19,6 +20,7 @@ import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
 
+    private final static String eq_url = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2014-01-01&endtime=2014-01-02";
     private final static String paulStringUrl = "http://magadistudio.com/complete-android-developer-course-source-files/string.html";
     private static final String Url = "https://jsonplaceholder.typicode.com/posts/1/comments";
     private RequestQueue queue;
@@ -29,7 +31,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         queue = Volley.newRequestQueue(this);
-        getStringObject(paulStringUrl);
+        // getStringObject(paulStringUrl);
+        this.getJsonObject(eq_url);
         // will get a Json Array
         JsonArrayRequest arrayRequest = new JsonArrayRequest(Url, new Response.Listener<JSONArray>() {
             @Override
@@ -52,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // we have to add request to queue
-        queue.add(arrayRequest);
+//        queue.add(arrayRequest);
     }
 
     // fetch string request
@@ -69,5 +72,25 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         queue.add(stringRequest);
+    }
+
+    private void getJsonObject(String url) {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(url , null,new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    Log.d("Object: ", response.getString("type"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("error: ", error.getMessage());
+            }
+        });
+
+        queue.add(jsonObjectRequest);
     }
 }
